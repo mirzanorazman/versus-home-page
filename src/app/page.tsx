@@ -1,101 +1,238 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React from "react";
+import { Theme } from "@radix-ui/themes";
+import { Card, Box, Text, Button, Container, Flex } from "@radix-ui/themes";
+import {
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+// Mock data for the Elo rating chart
+const mockEloData = [
+  { month: "Jan", rating: 1200 },
+  { month: "Feb", rating: 1250 },
+  { month: "Mar", rating: 1225 },
+  { month: "Apr", rating: 1300 },
+  { month: "May", rating: 1275 },
+  { month: "Jun", rating: 1350 },
+];
+
+// Feature card component
+const FeatureCard = ({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description?: string;
+  children?: React.ReactNode;
+}) => {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <Card className="h-full bg-[#0A0A0A] border border-[#222222] rounded-xl">
+      <Box className="p-4">
+        <h3 className="text-lg font-medium mb-2 text-white">{title}</h3>
+        {description && (
+          <p className="text-sm text-[#666666] mb-3">{description}</p>
+        )}
+        {children && <div className="mt-4">{children}</div>}
+      </Box>
+    </Card>
+  );
+};
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+// Add this new component at the top of the file
+const BackgroundGradient = () => {
+  return (
+    <div className="fixed inset-0 w-full h-full">
+      <svg
+        className="w-full h-full"
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <radialGradient
+            id="radialGradient"
+            cx="50%"
+            cy="30%"
+            r="70%"
+            gradientUnits="userSpaceOnUse"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            <stop offset="0%" stopColor="#2a2a2a" />
+            <stop offset="100%" stopColor="#111111" />
+          </radialGradient>
+        </defs>
+
+        {/* Base background */}
+        <rect width="100%" height="100%" fill="url(#radialGradient)" />
+
+        {/* Abstract shapes */}
+        <g opacity="0.15">
+          {/* Large blob in the background */}
+          <path
+            d="M50,20 C70,20 85,35 85,60 C85,85 70,95 50,95 C30,95 15,85 15,60 C15,35 30,20 50,20"
+            fill="#F56E0F"
+            opacity="0.3"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+
+          {/* Top right circle */}
+          <circle cx="75" cy="30" r="20" fill="#E55D0E" opacity="0.4" />
+
+          {/* Bottom left ellipse */}
+          <ellipse
+            cx="30"
+            cy="70"
+            rx="25"
+            ry="15"
+            fill="#F56E0F"
+            opacity="0.2"
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </g>
+      </svg>
     </div>
   );
-}
+};
+
+const LandingPage = () => {
+  return (
+    <Theme appearance="dark" accentColor="orange">
+      <div className="min-h-screen bg-transparent relative">
+        <div className="fixed inset-0 w-full h-full -z-10">
+          <BackgroundGradient />
+        </div>
+        <div className="relative z-10">
+          <Container className="py-16 px-4 md:px-24">
+            {/* Hero Section */}
+            <Box className="text-center mb-16">
+              <h1 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight text-white leading-tight">
+                Elevate Your Badminton League
+                <br />
+                with Versus
+              </h1>
+              <p className="text-base md:text-lg text-[#8B8D98] mt-6 mb-8 max-w-2xl mx-auto px-4">
+                Visualize performance instantly. Validate player progress.
+                Versatile Elo rankings.
+              </p>
+              <Flex
+                gap="5"
+                justify="center"
+                direction={{ initial: "column", sm: "row" }}
+              >
+                <Button size="3" variant="solid" highContrast>
+                  Get Started
+                </Button>
+                <Button size="3" variant="soft" highContrast>
+                  Learn More
+                </Button>
+              </Flex>
+            </Box>
+
+            {/* Features Grid */}
+            <div className="space-y-4">
+              {/* First row - stack on mobile, 2 columns on desktop */}
+              <Text className="text-white text-3xl md:text-4xl font-bold">
+                Versus, at a glance
+              </Text>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FeatureCard title="Match Management">
+                  <img
+                    src="/api/placeholder/300/200"
+                    alt="Match Management Interface"
+                    className="rounded-lg w-full"
+                  />
+                </FeatureCard>
+
+                <FeatureCard
+                  title="Real Time Leaderboards"
+                  description="Stay updated with real time rankings every game"
+                >
+                  <div className="bg-[#0A0A0A] p-3 rounded-lg">
+                    <Text size="2" className="text-[#666666] mb-2">
+                      Top Players
+                    </Text>
+                    {["Player 1: 1500", "Player 2: 1450", "Player 3: 1400"].map(
+                      (player, i) => (
+                        <Text
+                          key={i}
+                          size="2"
+                          className="text-[#8B8D98] leading-relaxed"
+                        >
+                          {player}
+                        </Text>
+                      )
+                    )}
+                  </div>
+                </FeatureCard>
+              </div>
+
+              {/* Second row - stack on mobile, 3 columns on desktop */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FeatureCard
+                  title="Dynamic Pairing"
+                  description="Pair players automatically or play Sports House mode"
+                />
+
+                <FeatureCard title="Statistics">
+                  <div className="h-48">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={mockEloData}>
+                        <XAxis
+                          dataKey="month"
+                          stroke="#333333"
+                          tick={{ fill: "#666666" }}
+                          axisLine={{ stroke: "#222222" }}
+                        />
+                        <YAxis
+                          stroke="#333333"
+                          tick={{ fill: "#666666" }}
+                          axisLine={{ stroke: "#222222" }}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "#0A0A0A",
+                            border: "1px solid #222222",
+                          }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="rating"
+                          stroke="#F56E0F"
+                          strokeWidth={1.5}
+                          dot={{ r: 3 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </FeatureCard>
+
+                <FeatureCard title="Elo-based Ranking" />
+              </div>
+            </div>
+
+            {/* Testimonial - adjust padding for mobile */}
+            <Box className="mt-16 text-center px-4 md:px-0">
+              <Card className="bg-[#1a1a1a] mx-auto max-w-2xl rounded-xl">
+                <Box className="p-4 md:p-6">
+                  <p className="text-lg md:text-xl text-white leading-relaxed">
+                    &quot;This is such a fun way to play our weekly
+                    leagues!&quot;
+                  </p>
+                  <p className="text-sm text-[#8B8D98] mt-4 font-medium">
+                    - A Happy Moderator
+                  </p>
+                </Box>
+              </Card>
+            </Box>
+          </Container>
+        </div>
+      </div>
+    </Theme>
+  );
+};
+
+export default LandingPage;
