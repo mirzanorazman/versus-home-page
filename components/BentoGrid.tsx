@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense } from "react";
 import { Card } from "@/components/ui/card";
 import {
   Dialog,
@@ -9,11 +9,29 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MatchResults } from "./mobile-mocks/MatchResults";
-import { Leaderboard } from "./mobile-mocks/Leaderboard";
+import dynamic from "next/dynamic";
 import { DynamicPairing } from "./mobile-mocks/DynamicPairing";
 import { Statistics } from "./mobile-mocks/Statistics";
 import { EloRanking } from "./mobile-mocks/EloRanking";
+
+// Dynamically import components with loading fallbacks
+const MatchResults = dynamic(
+  () => import("./mobile-mocks/MatchResults").then((mod) => mod.MatchResults),
+  {
+    loading: () => (
+      <div className="animate-pulse bg-[#1A1A1A] h-[200px] rounded-lg" />
+    ),
+  }
+);
+
+const Leaderboard = dynamic(
+  () => import("./mobile-mocks/Leaderboard").then((mod) => mod.Leaderboard),
+  {
+    loading: () => (
+      <div className="animate-pulse bg-[#1A1A1A] h-[200px] rounded-lg" />
+    ),
+  }
+);
 
 export function BentoGrid() {
   return (
@@ -22,11 +40,17 @@ export function BentoGrid() {
         Versus, at a glance
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <BentoCard
-          title="Match Management"
-          description="Record and track match results with ease"
-          content={<MatchResults />}
-        />
+        <Suspense
+          fallback={
+            <div className="animate-pulse bg-[#1A1A1A] h-[200px] rounded-lg" />
+          }
+        >
+          <BentoCard
+            title="Match Management"
+            description="Record and track match results with ease"
+            content={<MatchResults />}
+          />
+        </Suspense>
         <BentoCard
           title="Statistics"
           description="Track your progress over time"
